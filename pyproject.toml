@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "defender-mcp-server"
+version = "2.10.0"
+description = "Defender XDR MCP Server for Copilot Studio (FastMCP, Microsoft Graph and Defender for Endpoint API via On-Behalf-Of)"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp[azure]>=4.1.4,<5",
+    "mcp>=2.1.0,<3",
+    "httpx>=0.27,<1",
+    "uvicorn>=0.30",
+    "azure-monitor-opentelemetry>=1.6,<2",
+]
+
+[project.scripts]
+defender-mcp = "defender_mcp.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+defender_mcp = ["custom_hunts.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+
+[tool.ruff]
+line-length = 130
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["defender_mcp", "helpers"]

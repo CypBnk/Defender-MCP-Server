@@ -1,0 +1,36 @@
+[
+  {
+    "name": "rdp_logons_from_internet",
+    "description": "Successful Remote Desktop sign-ins on devices from public IP addresses, per device and source IP, with the accounts used. Finds RDP that is exposed to the internet.",
+    "query": "DeviceLogonEvents\n| where Timestamp > ago({{days}}d)\n| where ActionType == \"LogonSuccess\" and LogonType == \"RemoteInteractive\"\n| extend SourceIP = iff(RemoteIP startswith \"::ffff:\", substring(RemoteIP, 7), RemoteIP)\n| where RemoteIPType == \"Public\" or (RemoteIPType == \"FourToSixMapping\" and not(ipv4_is_private(SourceIP)) and not(ipv4_is_in_range(SourceIP, \"127.0.0.0/8\")))\n| summarize Logons = count(), Accounts = make_set(AccountName, 10), FirstSeen = min(Timestamp), LastSeen = max(Timestamp) by DeviceName, SourceIP\n| order by Logons desc",
+    "parameters": {
+      "days": {
+        "type": "days",
+        "default": 7,
+        "description": "Look-back window in days (1-30)."
+      }
+    }
+  },
+  {
+    "name": "process_runs_on_device",
+    "description": "Every start of one program (file name) on one device with command line, account and parent process, newest first. Example for a parameterized custom hunt.",
+    "query": "DeviceProcessEvents\n| where Timestamp > ago({{days}}d)\n| where DeviceId =~ {{device}} or DeviceName =~ {{device}} or DeviceName startswith strcat({{device}}, \".\")\n| where FileName =~ {{file_name}}\n| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName, InitiatingProcessFileName, SHA256\n| order by Timestamp desc",
+    "parameters": {
+      "device": {
+        "type": "device",
+        "required": true,
+        "description": "Device name (short name or FQDN) or Defender device ID."
+      },
+      "file_name": {
+        "type": "string",
+        "required": true,
+        "description": "Program file name, e.g. powershell.exe."
+      },
+      "days": {
+        "type": "days",
+        "default": 3,
+        "description": "Look-back window in days (1-30)."
+      }
+    }
+  }
+]

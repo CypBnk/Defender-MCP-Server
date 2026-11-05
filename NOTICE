@@ -1,0 +1,11 @@
+Defender XDR MCP Server
+Copyright 2026 The Defender XDR MCP Server Authors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE). Distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, and without support.
+
+This project is not a Microsoft product. It is not developed, endorsed, supported or reviewed by Microsoft
+Corporation. Microsoft, Microsoft Defender, Microsoft Sentinel, Microsoft Entra, Microsoft Graph,
+Copilot Studio and Azure are trademarks of the Microsoft group of companies.
+
+Third-party components and their licenses: see THIRD_PARTY_NOTICES.md.

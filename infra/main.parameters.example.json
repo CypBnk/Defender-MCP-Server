@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appName": {
+      "value": "ca-defender-mcp-prod"
+    },
+    "profile": {
+      "value": "full"
+    },
+    "image": {
+      "value": "<acr>.azurecr.io/defender-mcp-server:<tag>"
+    },
+    "acrName": {
+      "value": "<acr>"
+    },
+    "keyVaultName": {
+      "value": "<keyvault>"
+    },
+    "secretPrefix": {
+      "value": "mcp-"
+    },
+    "environmentName": {
+      "value": "<container-apps-environment>"
+    },
+    "logAnalyticsName": {
+      "value": "<log-analytics-workspace>"
+    },
+    "tenantId": {
+      "value": "<tenant-guid>"
+    },
+    "clientId": {
+      "value": "<client-id>"
+    },
+    "requiredScope": {
+      "value": "access_as_user"
+    },
+    "allowedClientAppIds": {
+      "value": "<copilot-studio-client-app-id>"
+    },
+    "allowedIngressCidrs": {
+      "value": []
+    },
+    "mdeApiHost": {
+      "value": "eu.api.security.microsoft.com"
+    }
+  }
+}

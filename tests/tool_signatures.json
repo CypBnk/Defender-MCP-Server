@@ -1,0 +1,1586 @@
+{
+  "add_comment": {
+    "kind": "admin",
+    "params": {
+      "comment": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, \"Comment text (max. 2000 characters). It is stored with the signed-in user's name.\"]"
+      },
+      "target": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Literal['incident', 'alert'], 'Comment on an incident or on an alert.']"
+      },
+      "target_id": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Incident ID (number) or alert ID.']"
+      }
+    }
+  },
+  "analyze_indicator": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "30",
+        "required": false,
+        "type": "Days"
+      },
+      "indicator": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'URL, domain, IP address or file hash (SHA256, SHA1, MD5).']"
+      },
+      "indicator_type": {
+        "default": "'auto'",
+        "required": false,
+        "type": "Annotated[hunts.IndicatorType, 'Type of the indicator; auto detects it.']"
+      },
+      "workspace": {
+        "default": "None",
+        "required": false,
+        "type": "Workspace"
+      }
+    }
+  },
+  "contain_user": {
+    "kind": "admin",
+    "params": {
+      "action": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[UserAction, 'revoke_sessions: sign out everywhere; disable_account / enable_account: block or allow Entra sign-in (cloud accounts); confirm_compromised: set user risk to high in Entra ID Protection; dismiss_risk: dismiss the user risk; disable_ad_account / enable_ad_account / force_password_reset: on-premises Active Directory account through Defender for Identity.']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "user": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'UPN or Entra object ID of the user; for the AD actions also the on-premises SID (S-1-5-21-...).']"
+      }
+    }
+  },
+  "create_detection_rule": {
+    "kind": "admin",
+    "params": {
+      "alert_description": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Alert description.']"
+      },
+      "alert_title": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Title of the alerts the rule creates.']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "description": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Rule description.']"
+      },
+      "display_name": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Rule name.']"
+      },
+      "enabled": {
+        "default": "True",
+        "required": false,
+        "type": "Annotated[bool, 'Create the rule enabled (true) or disabled (false).']"
+      },
+      "entities": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[list[EntityKind]], 'Entities to attach to the alert (default: device).']"
+      },
+      "frequency": {
+        "default": "'PT1H'",
+        "required": false,
+        "type": "Annotated[Frequency, 'How often the rule runs (ISO 8601: PT1H hourly ... P1D daily).']"
+      },
+      "query": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Advanced hunting KQL. Must return Timestamp, ReportId and the columns of the mapped entities (DeviceId/DeviceName, AccountName/AccountDomain/AccountSid, FileName/SHA1/SHA256).']"
+      },
+      "recommended_actions": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Recommended actions shown in the alert.']"
+      },
+      "rule_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Rule ID (lowercase letters, digits, hyphens). Default: derived from the name.']"
+      },
+      "severity": {
+        "default": "'medium'",
+        "required": false,
+        "type": "Annotated[Severity, 'Alert severity.']"
+      },
+      "tactic": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Tactic], 'MITRE ATT&CK tactic.']"
+      },
+      "techniques": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[list[str]], \"MITRE technique IDs, e.g. ['T1059.001'] (needs tactic).\"]"
+      }
+    }
+  },
+  "explore_exposure_graph": {
+    "kind": "read",
+    "params": {
+      "edge_labels": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Only follow these relation types, comma-separated, e.g. 'Can Authenticate As, CanRemoteInteractiveLogonTo'.\"]"
+      },
+      "max_hops": {
+        "default": "3",
+        "required": false,
+        "type": "Annotated[int, f'Maximum path length (1-{MAX_HOPS}).']"
+      },
+      "max_items": {
+        "default": "25",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "source": {
+        "default": "None",
+        "required": false,
+        "type": "NodeSpec"
+      },
+      "target": {
+        "default": "None",
+        "required": false,
+        "type": "NodeSpec"
+      },
+      "view": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[View, 'neighbors: direct relations of one node (and its details); blast_radius: what an attacker could reach from source (default targets: critical assets); perimeter: who/what can reach target (internet-facing and RCE-vulnerable sources first); paths: paths between source and target.']"
+      }
+    }
+  },
+  "find_ai_agents": {
+    "kind": "read",
+    "params": {
+      "account": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Local agents running under this account, or cloud agents owned by or shared with this user (UPN or name).']"
+      },
+      "device": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Local agents on this device (name or FQDN).']"
+      },
+      "include_removed": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Also agents that are deleted or uninstalled.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "mcp_server": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only agents using an MCP server or tool whose name or URL contains this text.']"
+      },
+      "name_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the agent name.']"
+      },
+      "platform": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Part of the platform name, e.g. 'Copilot Studio', 'Foundry', 'Bedrock'; 'local' = local AI agents discovered on devices.\"]"
+      },
+      "risky_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only local agents that act without approval or run in an untrusted host process.']"
+      },
+      "summary_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Counts per platform and status instead of the list.']"
+      }
+    }
+  },
+  "find_defender_devices": {
+    "kind": "read",
+    "params": {
+      "device_group": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only devices in this Defender device group (exact name).']"
+      },
+      "exposure_level": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['High', 'Medium', 'Low', 'None']], 'Exposure level.']"
+      },
+      "internet_facing": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[bool], 'Only internet-facing (true) or not internet-facing (false) devices.']"
+      },
+      "ip_address": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Internal IP address: which device used it at seen_at (+/- window_minutes)? Not combinable with the other filters.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "name_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the device name.']"
+      },
+      "not_seen_for_days": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[int], 'Only devices not seen for at least this many days (1-29).']"
+      },
+      "onboarding_status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['Onboarded', 'Can be onboarded', 'Unsupported', 'Insufficient info']], 'Defender for Endpoint onboarding status (discovered devices are not onboarded).']"
+      },
+      "os_family": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[OsFamily], 'Operating system family.']"
+      },
+      "risk_score": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[RiskScore], 'Only devices with this Defender machine risk (e.g. High); can be combined with exposure_level, name_contains, device_group, tag.']"
+      },
+      "seen_at": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'With ip_address: ISO 8601 time, e.g. from a firewall log (default: now).']"
+      },
+      "sensor_health": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['active', 'inactive', 'impaired']], 'EDR sensor health.']"
+      },
+      "summary_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Return counts per OS, onboarding status, sensor health and exposure instead of the list.']"
+      },
+      "tag": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only devices with this device tag (manual or dynamic).']"
+      },
+      "window_minutes": {
+        "default": "15",
+        "required": false,
+        "type": "Annotated[int, 'With ip_address: minutes before and after seen_at (1-720).']"
+      }
+    }
+  },
+  "find_exposure_nodes": {
+    "kind": "read",
+    "params": {
+      "category": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Only this category, e.g. 'device', 'identity', 'virtual_machine', 'ip_address'.\"]"
+      },
+      "critical_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only critical assets (criticality level 0-3).']"
+      },
+      "internet_facing_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only internet-facing nodes.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "node_label": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Only this node label, e.g. 'microsoft.compute/virtualmachines', 'user', 'device'.\"]"
+      },
+      "search": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the node name or the exact node ID.']"
+      }
+    }
+  },
+  "find_identities": {
+    "kind": "read",
+    "params": {
+      "account_type": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['User', 'ServiceAccount']], 'Only users or only service accounts.']"
+      },
+      "department": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the department name.']"
+      },
+      "guests_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only guest accounts.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "name_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the display name or UPN.']"
+      },
+      "privileged_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, \"Only accounts with assigned or eligible roles or the Defender for Identity tag 'Sensitive'.\"]"
+      },
+      "source": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Identity provider, e.g. 'Entra', 'Active Directory', 'Okta' (part of the name).\"]"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['Enabled', 'Disabled']], 'Only enabled or only disabled accounts.']"
+      },
+      "summary_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Counts per identity provider and account type instead of the list.']"
+      },
+      "without_mfa": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only Entra ID accounts without a registered MFA method.']"
+      }
+    }
+  },
+  "get_ai_agent": {
+    "kind": "read",
+    "params": {
+      "agent": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'AgentId, agent name, Entra agent ID or platform agent ID (from find_ai_agents).']"
+      }
+    }
+  },
+  "get_alert": {
+    "kind": "read",
+    "params": {
+      "alert_id": {
+        "default": null,
+        "required": true,
+        "type": "AlertId"
+      }
+    }
+  },
+  "get_antivirus_health": {
+    "kind": "read",
+    "params": {
+      "device": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'One device (name, FQDN or Defender device ID): its antivirus details.']"
+      },
+      "issue": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[AvIssue], 'List the devices with this problem instead of the summary: outdated security intelligence (signatures), engine or platform, antivirus not in active mode (passive, EDR block, disabled), failed quick or full scan.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "os_kind": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['windows', 'mac', 'linux']], 'Only devices with this OS.']"
+      }
+    }
+  },
+  "get_cloud_app_discovery": {
+    "kind": "read",
+    "params": {
+      "app_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"App ID from summary or apps (view 'app').\"]"
+      },
+      "category": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"apps: category, e.g. 'cloud storage', 'webmail', 'generative AI', 'MCP server' or 'ai' for all AI categories.\"]"
+      },
+      "cursor": {
+        "default": "None",
+        "required": false,
+        "type": "Cursor"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "max_risk_score": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[int], 'apps: only apps with a risk score up to this value (0-10, 10 = lowest risk); summary: threshold for review candidates (default 6).']"
+      },
+      "name_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'apps: part of the app name or of a domain.']"
+      },
+      "period": {
+        "default": "'P30D'",
+        "required": false,
+        "type": "Annotated[Period, 'Last 7, 30 or 90 days.']"
+      },
+      "sort_by": {
+        "default": "'users'",
+        "required": false,
+        "type": "Annotated[SortBy, 'apps: sort order (risk = riskiest first).']"
+      },
+      "stream_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Data source (stream) ID. Default: the Defender for Endpoint stream, else the most recently active one.']"
+      },
+      "tag": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'apps: Sanctioned, Unsanctioned, Monitored, untagged or a custom tag.']"
+      },
+      "view": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[View], 'summary = evaluation of the discovery report (default); apps = filtered, sorted app list; app = one app in detail (needs app_id); streams = data sources.']"
+      }
+    }
+  },
+  "get_cve_exposure": {
+    "kind": "read",
+    "params": {
+      "cve_id": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'CVE identifier, e.g. CVE-2024-21412.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      }
+    }
+  },
+  "get_defender_device": {
+    "kind": "read",
+    "params": {
+      "device": {
+        "default": null,
+        "required": true,
+        "type": "DeviceRef"
+      }
+    }
+  },
+  "get_detection_rule": {
+    "kind": "read",
+    "params": {
+      "rule_id": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Detection rule ID.']"
+      }
+    }
+  },
+  "get_device_activity": {
+    "kind": "read",
+    "params": {
+      "activity": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Activity, 'processes: process starts with command lines; network: connections; logons: sign-ins on the device; files: file events; registry: registry changes; events: security control events (AV, ASR, exploit protection ...); alerts: alerts of the device.']"
+      },
+      "around": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'ISO 8601 time, e.g. the alert time 2026-11-02T08:15:00Z: show the events from window_minutes before to window_minutes after it, oldest first (instead of the last days).']"
+      },
+      "contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only events whose main fields contain this text (e.g. a process name, remote URL/IP, account, registry key or action type).']"
+      },
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      },
+      "device": {
+        "default": null,
+        "required": true,
+        "type": "DeviceRef"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "window_minutes": {
+        "default": "30",
+        "required": false,
+        "type": "Annotated[int, 'With around: minutes before and after (1-720).']"
+      }
+    }
+  },
+  "get_device_exposure": {
+    "kind": "read",
+    "params": {
+      "device": {
+        "default": null,
+        "required": true,
+        "type": "DeviceRef"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['Critical', 'High', 'Medium', 'Low']], 'vulnerabilities: minimum severity, e.g. High = high and critical.']"
+      },
+      "software": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"vulnerabilities / software: only this software, e.g. 'chrome' or 'Google Chrome' (every word must match vendor or product).\"]"
+      },
+      "view": {
+        "default": "'vulnerabilities'",
+        "required": false,
+        "type": "Annotated[Exposure, 'vulnerabilities: CVEs with CVSS, exploit availability and recommended update; software: installed software with end-of-support status and number of CVEs; configuration: failed security configuration checks; security_baselines: failed baseline checks (CIS, STIG) with current and expected value; browser_extensions: installed browser extensions with risk; certificates: certificates with expiry and weak keys.']"
+      }
+    }
+  },
+  "get_hunting_schema": {
+    "kind": "read",
+    "params": {
+      "search": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Keywords to find tables by name or description, e.g. 'sign-in', 'email', 'firewall', 'watchlist', 'okta'.\"]"
+      },
+      "table": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Table name, or up to 5 names separated by commas, e.g. 'DeviceProcessEvents, DeviceNetworkEvents'. Omit to list the tables.\"]"
+      },
+      "workspace": {
+        "default": "None",
+        "required": false,
+        "type": "Workspace"
+      }
+    }
+  },
+  "get_identity_health": {
+    "kind": "read",
+    "params": {
+      "cursor": {
+        "default": "None",
+        "required": false,
+        "type": "Cursor"
+      },
+      "issue_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Health issue ID: returns this issue with recommendations and commands.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['low', 'medium', 'high']], 'Only this severity.']"
+      },
+      "status": {
+        "default": "'open'",
+        "required": false,
+        "type": "Annotated[Optional[HealthStatus], 'Only issues with this status (default: open).']"
+      },
+      "view": {
+        "default": "'issues'",
+        "required": false,
+        "type": "Annotated[Literal['issues', 'sensors'], 'issues: health issues; sensors: all Defender for Identity sensors with health, service status, version and deployment status.']"
+      }
+    }
+  },
+  "get_identity_risks": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Annotated[int, 'detections: look-back window in days (1-90).']"
+      },
+      "include_closed": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'users / service_principals: also remediated or dismissed risks.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "min_risk_level": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['low', 'medium', 'high']], 'Only this risk level or higher.']"
+      },
+      "user": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'detections: only this user (UPN).']"
+      },
+      "view": {
+        "default": "'users'",
+        "required": false,
+        "type": "Annotated[RiskView, 'users: risky users (at risk or confirmed compromised); detections: risk detections (e.g. password spray, anonymous IP, leaked credentials) in the last days; service_principals: risky workload identities.']"
+      }
+    }
+  },
+  "get_incident": {
+    "kind": "read",
+    "params": {
+      "incident_id": {
+        "default": null,
+        "required": true,
+        "type": "IncidentId"
+      }
+    }
+  },
+  "get_incident_statistics": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Annotated[int, 'Reporting period in days (1-90), e.g. 1 for a shift handover, 7 for a weekly report.']"
+      }
+    }
+  },
+  "get_remediation_tasks": {
+    "kind": "read",
+    "params": {
+      "include_devices": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'With task_id: list the exposed devices of the activity.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "status": {
+        "default": "'Active'",
+        "required": false,
+        "type": "Annotated[Optional[Literal['Active', 'Completed']], 'List: only this status (default Active).']"
+      },
+      "task_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'One remediation activity: its details (and exposed devices).']"
+      }
+    }
+  },
+  "get_response_actions": {
+    "kind": "admin",
+    "params": {
+      "action_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'One machine action ID (returned by run_device_response).']"
+      },
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Annotated[int, 'Look-back window in days (1-180).']"
+      },
+      "device": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only actions of this device (name, FQDN, Defender or Entra device ID).']"
+      },
+      "investigation_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'One automated investigation by ID.']"
+      },
+      "kind": {
+        "default": "'machine_actions'",
+        "required": false,
+        "type": "Annotated[Literal['machine_actions', 'investigations', 'attack_disruption'], \"machine_actions: isolation, scans, packages, ...; investigations: automated investigations (AIR); attack_disruption: what automatic attack disruption and predictive shielding blocked (contained users' logons, sessions, applied policies).\"]"
+      },
+      "max_items": {
+        "default": "20",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "state": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['Running', 'PendingApproval', 'PendingResource', 'Queued', 'Benign', 'SuccessfullyRemediated', 'PartiallyRemediated', 'PartiallyInvestigated', 'Failed', 'Terminated', 'TerminatedByUser', 'TerminatedBySystem']], 'investigations: only this state (PendingApproval = waiting in the Action center).']"
+      }
+    }
+  },
+  "get_secure_score": {
+    "kind": "read",
+    "params": {
+      "category": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['Identity', 'Data', 'Device', 'Apps', 'Infrastructure']], 'Only improvement actions of this category.']"
+      },
+      "history_days": {
+        "default": "30",
+        "required": false,
+        "type": "Annotated[int, 'Number of daily scores for the trend (1-90).']"
+      },
+      "include_improvements": {
+        "default": "True",
+        "required": false,
+        "type": "Annotated[bool, 'Also return the improvement actions with the largest possible gain.']"
+      },
+      "max_improvements": {
+        "default": "15",
+        "required": false,
+        "type": "Annotated[int, 'Number of improvement actions (1-50).']"
+      }
+    }
+  },
+  "get_security_overview": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      }
+    }
+  },
+  "get_threat_intelligence": {
+    "kind": "read",
+    "params": {
+      "indicator": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'IP address, domain, URL or CVE ID (e.g. CVE-2024-3400) to look up.']"
+      },
+      "max_items": {
+        "default": "5",
+        "required": false,
+        "type": "Annotated[int, 'search: maximum number of articles and of profiles (1-25).']"
+      },
+      "search": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"One keyword (single term) to search threat intelligence articles and threat actor / tool profiles, e.g. 'Storm-0501', 'Qakbot' or 'ransomware'.\"]"
+      }
+    }
+  },
+  "get_vulnerability_overview": {
+    "kind": "read",
+    "params": {
+      "exploit_available_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only CVEs with a public exploit (not for misconfigurations).']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[SeverityLevel], 'Minimum CVE severity, e.g. High = high and critical; for browser_extensions the minimum extension risk.']"
+      },
+      "software": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Only this software, e.g. 'chrome', 'Google Chrome', 'Microsoft Edge' (every word must match vendor or product); not for misconfigurations.\"]"
+      },
+      "view": {
+        "default": "'top_cves'",
+        "required": false,
+        "type": "Annotated[VulnView, 'top_cves: CVEs by severity and number of affected devices; vulnerable_software: products with the most critical/high CVEs; exposed_devices: devices with the most critical/high CVEs; missing_updates: security updates (KBs / versions) that would fix the most CVEs on the most devices; end_of_support: software that is or will soon be out of support; misconfigurations: failed security configurations by impact and number of devices (security recommendations); security_baselines: compliance per baseline profile (CIS, STIG) and the most failed checks; browser_extensions: browser extensions by risk and number of devices; certificates: expired, expiring (30 days) or weak certificates on devices.']"
+      }
+    }
+  },
+  "hunt_cloud_app_activity": {
+    "kind": "read",
+    "params": {
+      "account": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only this account: UPN or Entra object ID.']"
+      },
+      "application": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Only this application, e.g. 'Microsoft SharePoint Online'.\"]"
+      },
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      },
+      "hunt": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[CloudHunt, \"activity_summary: events per app and action; account_activity: one account's activities with IP, country and user agent (needs account); oauth_consents: app consents and permission grants; mass_downloads: accounts with many downloads/uploads; admin_activity: administrative operations; impossible_travel_alerts: impossible travel / infrequent country alerts with accounts and IPs; oauth_apps: OAuth app inventory of app governance (privilege level, risk score, verified publisher, admin consent, unused apps), most privileged first.\"]"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "min_count": {
+        "default": "None",
+        "required": false,
+        "type": "MinCount"
+      }
+    }
+  },
+  "hunt_email_threats": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      },
+      "hunt": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[EmailHunt, 'threat_summary: daily counts (phish, malware, spam, blocked, delivered with threat); phishing / malware: detected emails; malicious_attachments: attachments with threats; url_clicks: Safe Links clicks on malicious or blocked URLs; spoofing: SPF/DMARC/CompAuth failures; message_trace: all emails matching the filters (needs a filter); post_delivery: zero-hour auto purge (ZAP) and manual remediation after delivery; campaigns: email campaigns with recipients, delivered and still in inbox; teams_threats: Teams messages with threats; collaboration_files: malicious files in SharePoint, OneDrive and Teams.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "recipient": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Recipient email address (for url_clicks: the account that clicked).']"
+      },
+      "sender": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Sender email address or sender domain.']"
+      },
+      "subject_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the subject (case-insensitive).']"
+      }
+    }
+  },
+  "hunt_endpoint_threats": {
+    "kind": "read",
+    "params": {
+      "account": {
+        "default": "None",
+        "required": false,
+        "type": "AccountFilter"
+      },
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      },
+      "device": {
+        "default": "None",
+        "required": false,
+        "type": "DeviceFilter"
+      },
+      "hunt": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[EndpointHunt, 'suspicious_powershell: encoded/download/bypass PowerShell; lolbin_downloads: certutil, mshta, regsvr32 & co. with URLs; new_services: service installations (persistence); scheduled_tasks: created tasks; antivirus_detections: Defender AV detections; asr_events: attack surface reduction blocks/audits; tampering_attempts: attempts to disable Defender; local_admin_additions: accounts added to local Administrators.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      }
+    }
+  },
+  "hunt_identity_threats": {
+    "kind": "read",
+    "params": {
+      "account": {
+        "default": "None",
+        "required": false,
+        "type": "AccountFilter"
+      },
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      },
+      "hunt": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[IdentityHunt, 'failed_logons: accounts with many failed sign-ins (AD and Entra via Defender); password_spray: IPs failing on many accounts; ldap_reconnaissance: accounts/devices with many LDAP queries; lateral_movement: accounts with network/RDP sign-ins on many devices; group_membership_changes: AD group membership changes; identity_alerts: Defender for Identity / Entra ID Protection alerts with accounts.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "min_count": {
+        "default": "None",
+        "required": false,
+        "type": "MinCount"
+      }
+    }
+  },
+  "hunt_ioc": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "30",
+        "required": false,
+        "type": "Annotated[int, 'Look-back window in days (1-30).']"
+      },
+      "indicator": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'IP address, domain, URL or file hash (SHA256, SHA1, MD5).']"
+      },
+      "indicator_type": {
+        "default": "'auto'",
+        "required": false,
+        "type": "Annotated[IndicatorType, 'Type of the indicator; auto detects it.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      }
+    }
+  },
+  "investigate_user": {
+    "kind": "read",
+    "params": {
+      "days": {
+        "default": "7",
+        "required": false,
+        "type": "Days"
+      },
+      "user": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'UPN (name@contoso.com) or Entra object ID of the user.']"
+      },
+      "workspace": {
+        "default": "None",
+        "required": false,
+        "type": "Workspace"
+      }
+    }
+  },
+  "list_alerts": {
+    "kind": "read",
+    "params": {
+      "assigned_to": {
+        "default": "None",
+        "required": false,
+        "type": "AssignedTo"
+      },
+      "classification": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Classification], 'Only this classification.']"
+      },
+      "cursor": {
+        "default": "None",
+        "required": false,
+        "type": "Cursor"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "service_source": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[ServiceSource], 'Only alerts from this product.']"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Severity], 'Only this severity.']"
+      },
+      "since_hours": {
+        "default": "168",
+        "required": false,
+        "type": "SinceHours"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[AlertStatus], 'Only this status.']"
+      }
+    }
+  },
+  "list_attack_simulations": {
+    "kind": "read",
+    "params": {
+      "cursor": {
+        "default": "None",
+        "required": false,
+        "type": "Cursor"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "simulation_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Simulation ID: returns this simulation with its result overview.']"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[SimulationStatus], 'Only simulations with this status.']"
+      }
+    }
+  },
+  "list_detection_rules": {
+    "kind": "read",
+    "params": {
+      "cursor": {
+        "default": "None",
+        "required": false,
+        "type": "Cursor"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "name_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Part of the rule name.']"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[RuleStatus], 'Only rules with this status.']"
+      }
+    }
+  },
+  "list_incidents": {
+    "kind": "read",
+    "params": {
+      "assigned_to": {
+        "default": "None",
+        "required": false,
+        "type": "AssignedTo"
+      },
+      "classification": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Classification], 'Only this classification.']"
+      },
+      "cursor": {
+        "default": "None",
+        "required": false,
+        "type": "Cursor"
+      },
+      "determination": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[IncidentDetermination], 'Only this determination (e.g. malware, phishing).']"
+      },
+      "include_alerts": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Add the alerts (title, severity, product, MITRE) and impacted entities of each incident, e.g. to rank several incidents for triage.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "name_contains": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only incidents whose name contains this text (case-insensitive).']"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Severity], 'Only this severity.']"
+      },
+      "since_hours": {
+        "default": "None",
+        "required": false,
+        "type": "SinceHours"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[IncidentStatus], 'Incident status. Open incidents are active, inProgress or awaitingAction.']"
+      },
+      "tag": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Only incidents with this tag (custom or system tag, case-insensitive).']"
+      },
+      "unassigned_only": {
+        "default": "False",
+        "required": false,
+        "type": "Annotated[bool, 'Only incidents without an owner.']"
+      }
+    }
+  },
+  "list_sentinel_workspaces": {
+    "kind": "read",
+    "params": {}
+  },
+  "manage_detection_rule": {
+    "kind": "admin",
+    "params": {
+      "action": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Literal['enable', 'disable', 'update', 'delete'], 'What to do with the rule.']"
+      },
+      "alert_title": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'update: new alert title.']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "display_name": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'update: new rule name.']"
+      },
+      "frequency": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Frequency], 'update: new run frequency.']"
+      },
+      "query": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'update: new KQL query (validated in the preview).']"
+      },
+      "rule_id": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Detection rule ID.']"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Severity], 'update: new alert severity.']"
+      }
+    }
+  },
+  "manage_indicator": {
+    "kind": "admin",
+    "params": {
+      "action": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[IndicatorAction], 'add: Block (default for network), BlockAndRemediate (default for files), Warn, Audit, Alert, AlertAndBlock or Allowed.']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "description": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'add: description.']"
+      },
+      "device_groups": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[list[str]], 'add: only these device groups (names); default all.']"
+      },
+      "expiration_days": {
+        "default": "90",
+        "required": false,
+        "type": "Annotated[int, 'add: days until the indicator expires (1-365).']"
+      },
+      "generate_alert": {
+        "default": "True",
+        "required": false,
+        "type": "Annotated[bool, 'add: create an alert when the indicator matches.']"
+      },
+      "indicator": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'IP address, domain, URL, file hash or certificate thumbprint. list: filter; add: required; delete: deletes all indicators with this value.']"
+      },
+      "indicator_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'delete: indicator ID instead of the value.']"
+      },
+      "indicator_type": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[IndicatorType], 'Type; detected automatically when omitted.']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "operation": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Literal['list', 'add', 'delete'], 'list runs immediately; add and delete need confirmation.']"
+      },
+      "severity": {
+        "default": "'Medium'",
+        "required": false,
+        "type": "Annotated[Literal['Informational', 'Low', 'Medium', 'High'], 'add: alert severity.']"
+      },
+      "title": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'add: title of the indicator / alert.']"
+      }
+    }
+  },
+  "manage_submissions": {
+    "kind": "admin",
+    "params": {
+      "category": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Category], 'submit_url: phishing, malware or spam (should be blocked) or notJunk (legitimate, wrongly blocked).']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "content_type": {
+        "default": "'all'",
+        "required": false,
+        "type": "Annotated[Literal['all', 'email', 'url', 'file'], 'list: type of submission.']"
+      },
+      "days": {
+        "default": "30",
+        "required": false,
+        "type": "Annotated[int, 'list: look-back window in days (1-180).']"
+      },
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "operation": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Literal['list', 'submit_url'], 'list runs immediately; submit_url needs confirmation.']"
+      },
+      "source": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['user', 'administrator']], 'list: user = messages reported by users; administrator = admin submissions.']"
+      },
+      "url": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'submit_url: the URL to submit.']"
+      }
+    }
+  },
+  "run_custom_hunt": {
+    "kind": "read",
+    "params": {
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "name": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Custom hunt to run; omit to list the available hunts with their parameters.']"
+      },
+      "parameters": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Parameter values as a JSON object, e.g. {\"device\": \"pc-01\", \"days\": 7}.']"
+      },
+      "workspace": {
+        "default": "None",
+        "required": false,
+        "type": "Workspace"
+      }
+    }
+  },
+  "run_device_response": {
+    "kind": "admin",
+    "params": {
+      "action": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[ResponseAction, 'antivirus_scan_* run immediately; all other actions need confirmation.']"
+      },
+      "comment": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], \"Reason, stored with the action in Defender (e.g. 'incident 42').\"]"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "device": {
+        "default": null,
+        "required": true,
+        "type": "DeviceRef"
+      },
+      "isolation_type": {
+        "default": "'Full'",
+        "required": false,
+        "type": "Annotated[Literal['Full', 'Selective'], 'isolate: Full or Selective (Selective keeps Outlook, Teams and Skype working; Windows 10 1709+).']"
+      },
+      "sha1": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'stop_and_quarantine_file: SHA1 of the file.']"
+      },
+      "tag": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'add_tag / remove_tag: the device tag (1-200 characters).']"
+      }
+    }
+  },
+  "run_hunting_query": {
+    "kind": "read",
+    "params": {
+      "max_items": {
+        "default": "50",
+        "required": false,
+        "type": "MaxItems"
+      },
+      "query": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'KQL query against the advanced hunting schema, e.g. \"DeviceProcessEvents | where Timestamp > ago(1d) | summarize count() by FileName | top 10 by count_\".']"
+      },
+      "timespan_days": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[int], 'Look-back window enforced by the service in days (1-180, default 30). If the query has its own time filter, the shorter window applies; set it for workspace data older than 30 days.']"
+      },
+      "workspace": {
+        "default": "None",
+        "required": false,
+        "type": "Workspace"
+      }
+    }
+  },
+  "sanction_cloud_apps": {
+    "kind": "admin",
+    "params": {
+      "app_ids": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[list[str], 'Numeric app IDs from get_cloud_app_discovery (1-10).']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "status": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Status, 'Sanctioned = approved for use; Unsanctioned = prohibited (blocked on devices if the Defender for Endpoint integration blocks unsanctioned apps).']"
+      },
+      "stream_id": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Cloud Discovery stream used to look up the apps (default as in get_cloud_app_discovery).']"
+      }
+    }
+  },
+  "update_alert": {
+    "kind": "admin",
+    "params": {
+      "alert_id": {
+        "default": null,
+        "required": true,
+        "type": "AlertId"
+      },
+      "assign_to": {
+        "default": "None",
+        "required": false,
+        "type": "AssignTo"
+      },
+      "classification": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Classification], 'Classification.']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "determination": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[AlertDetermination], 'Determination; must fit the classification.']"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['new', 'inProgress', 'resolved']], 'New status.']"
+      }
+    }
+  },
+  "update_identity_health_issue": {
+    "kind": "admin",
+    "params": {
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "issue_id": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[str, 'Health issue ID (get_identity_health).']"
+      },
+      "status": {
+        "default": null,
+        "required": true,
+        "type": "Annotated[Literal['open', 'closed', 'suppressed'], 'New status. Suppressed issues are hidden until re-opened.']"
+      }
+    }
+  },
+  "update_incident": {
+    "kind": "admin",
+    "params": {
+      "add_tags": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[list[str]], 'Custom tags to add (existing tags are kept).']"
+      },
+      "assign_to": {
+        "default": "None",
+        "required": false,
+        "type": "AssignTo"
+      },
+      "classification": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Classification], 'Classification.']"
+      },
+      "confirmation_token": {
+        "default": "None",
+        "required": false,
+        "type": "ConfirmationToken"
+      },
+      "determination": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[IncidentDetermination], 'Determination; must fit the classification.']"
+      },
+      "incident_id": {
+        "default": null,
+        "required": true,
+        "type": "IncidentId"
+      },
+      "resolving_comment": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[str], 'Comment explaining the resolution and classification.']"
+      },
+      "severity": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Severity], 'New severity.']"
+      },
+      "status": {
+        "default": "None",
+        "required": false,
+        "type": "Annotated[Optional[Literal['active', 'resolved']], 'New status (resolved also resolves its alerts).']"
+      }
+    }
+  }
+}

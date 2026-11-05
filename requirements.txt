@@ -1,0 +1,8 @@
+# Direct runtime dependencies (major-version bounds).
+# For reproducible images generate requirements.lock with exact versions and hashes:  scripts/lock.sh
+fastmcp[azure]>=4.1.4,<5
+# MCP SDK: 2.0.0/2.0.1 read request bodies without size limit (GHSA-fmmv-w9g8-j3gc, fixed in 2.1.0)
+mcp>=2.1.0,<3
+httpx>=0.27,<1
+uvicorn>=0.30
+azure-monitor-opentelemetry>=1.6,<2
