@@ -32,6 +32,7 @@ licenses: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Architecture
 
+```
 Copilot Studio ──OAuth 2.0 (Manual, client app)──▶ Entra ID ──▶ Access token (aud = server app)
       │
       └── POST /mcp + bearer token ──▶ Token validation (signature, tenant, scope, delegated, client app)
@@ -388,7 +389,7 @@ Copy-Item deploy.settings.example.psd1 deploy.settings.psd1
 
 You can then adjust the settings to fit your environment. The most important values include:
 
-PowerShell
+```PowerShell
 ResourceGroup = 'rg-defender-mcp-prod'
 Location = 'westeurope'
  
@@ -398,6 +399,7 @@ LogAnalyticsWorkspace = 'log-defender-mcp-prod'
  
 AppRegEnvironment = 'prod'
 AllowedGroupIds = @()
+```
 
 If you use your own naming conventions, now is the right time to enter them. The names for the Container Registry and Key Vault can be generated automatically. This makes sense, since both names must be globally unique.
 
@@ -405,10 +407,10 @@ Step 2: Connect to Azure
 
 Next, we sign in with the Azure CLI to the correct tenant and select the desired subscription:
 
-PowerShell
+```PowerShell
 az login --tenant <tenant-id>
 az account set --subscription <subscription-id>
- 
+```
 
 The script checks whether the signed-in tenant matches the TenantId stored in the settings. Anyone who regularly switches between multiple tenants or test environments knows why a check here makes sense.
 
@@ -416,41 +418,34 @@ Step 3: Start the deployment
 
 We start the actual deployment with the following command:
 
-PowerShell
+```PowerShell
 ./deploy.ps1 -ConfigureAppRegistration
+```
 
 If you also want to enable actions / write permissions, use this command:
 
-PowerShell
+```PowerShell
 ./deploy.ps1 -ConfigureAppRegistration -GrantWritePermissions
+```
 
 On the first run, the script first checks:
 
 · PowerShell, Azure CLI, and Bicep versions
-
 · Azure sign-in, tenant, and subscription
-
 · Deployment settings
-
 · Required resource providers
 
 Afterwards, the Azure resources, the container image, and the two app registrations are created or configured. The client secret of the server app and the signing key are stored directly in the Key Vault and do not appear in the console output.
-
 At the end, the script runs a smoke test and outputs the values we need for Copilot Studio in the next step. You can also run the script again. Existing resources are reused and missing components are added.
 
 Step 4: Connect the MCP server to Copilot Studio
-
 Now we come to the interesting part: the connection to Copilot Studio.
-
 Open the desired agent and navigate to: Tools > Add tool > Model Context Protocol.
-
 As the server URL, enter the endpoint output by the deployment script:
 
 https://<container-app>.<domain>/mcp
 
-
 For authentication, we select OAuth 2.0 > Manual. You will find the actual values in the deployment script's output. Here is an example:
-
 Field	ValueClient ID	App ID of the Copilot client app
 Client Secret	Secret of the Copilot client app
 Authorization URL	https://login.microsoftonline.com/<tenant>/oauth2/v2.0/authorize
@@ -458,28 +453,26 @@ Token URL / Refresh URL	https://login.microsoftonline.com/<tenant>/oauth2/v2.0/t
 Scopes	openid profile api://<server-client-id>/access_as_user offline_access
 
 You have to create the client secret manually once on the client app, and then store it in Copilot Studio in the connection setup.
-
 After saving, Copilot Studio displays a redirect URL. You can add it using the following command:
 
-PowerShell
+```PowerShell
 ./deploy.ps1 -AddRedirectUri '<redirect-url>'
+```
 
 Afterwards, we create the connection and sign in.
 
 Optional:
 Restrict access via Entra groups
-PowerShell
-AllowedGroupIds = @(
-'<object-id-of-the-security-group>'
-)
+```PowerShell
+AllowedGroupIds = @('<object-id-of-the-security-group>')
+```
 
 The script assigns the groups to both enterprise apps and enables "Assignment required".
-
 Access to the container endpoint
-
 After a successful functional test, network access can additionally be restricted to the Power Platform connector ranges:
 
-PowerShell
+```PowerShell
 ./deploy.ps1 -RestrictIngressToPowerPlatform
+```
 
 Beforehand, you should check in the audit log which IP addresses the connector calls actually come from.
