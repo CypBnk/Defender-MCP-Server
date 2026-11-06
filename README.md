@@ -72,7 +72,7 @@ src/defender_mcp/
 ### Read tools (38)
 
 | Area | Tool | Content |
-|---|---|---|
+| --- | --- | --- |
 | Overview | `get_security_overview` | Open incidents (active, in progress, awaiting action) by severity and status, alerts by product and severity with the most frequent titles, device onboarding and sensor health, Secure Score, open MDI health issues; also a connection test |
 | Incidents and alerts | `list_incidents` | Incident queue: filter by status, severity, period, owner (including `me`), unassigned only, tag, classification, determination (e.g. malware, phishing), part of the name; optionally with the alerts per incident (title, severity, MITRE, entities) in one call |
 | | `get_incident` | Details with alerts, affected entities, comments |
@@ -113,7 +113,7 @@ src/defender_mcp/
 ### Admin tools (12)
 
 | Tool | Action | Execution |
-|---|---|---|
+| --- | --- | --- |
 | `update_incident` | Status, classification, determination, owner (including `me`), severity, tags, closing comment | two steps |
 | `update_alert` | Status, classification, determination, owner | two steps |
 | `add_comment` | Comment on an incident or alert | immediate |
@@ -133,7 +133,7 @@ with `-GrantWritePermissions`.
 ### Deliberately not included or not possible through the API
 
 | Task | Reason | Alternative |
-|---|---|---|
+| --- | --- | --- |
 | Remove emails from mailboxes (soft/hard delete, junk, move back to inbox) | The Graph API `analyzedEmails/remediate` supports **no delegated permissions**, only an application permission. It would contradict the "on behalf of the user only" principle | Defender portal (Explorer, "Take action" in Advanced Hunting) or your own automation with an application permission and approval |
 | Approve pending actions in the Action center, control automated investigations | no public API (the status can be read with `get_response_actions`) | Defender portal (Action center) |
 | Release quarantined mails, Tenant Allow/Block List, Defender for Office 365 policies | no Graph API (Exchange Online PowerShell) | Defender portal / PowerShell |
@@ -145,23 +145,24 @@ with `-GrantWritePermissions`.
 | Other Defender for Cloud Apps actions (suspend user, tag Monitored, custom app tags, remove tag), App Governance policies | no documented API; `sanction_cloud_apps` sets Sanctioned and Unsanctioned through an undocumented endpoint | Defender portal (Cloud apps) |
 
 **Example requests to the agent**
+
 - "Show me my open incidents and all unassigned ones with high severity." → `list_incidents`
-- "What do we know about max@contoso.com? Is the account compromised?" → `investigate_user`
+- "What do we know about <max@contoso.com>? Is the account compromised?" → `investigate_user`
 - "What happened on PC-0815 15 minutes before and after the alert?" → `get_alert`, then `get_device_activity(around=…)`
 - "Is the domain evil.example known to be malicious, and does it show up in our environment?" → `get_threat_intelligence`, `hunt_ioc`
 - "Which devices have outdated antivirus signatures?" → `get_antivirus_health(issue="outdated_signatures")`
 - "Which security updates would close the most critical CVEs?" → `get_vulnerability_overview(view="missing_updates")`
-- "Isolate PC-0815 and disable max@contoso.com." → `run_device_response`, `contain_user` (each preview, then execution)
+- "Isolate PC-0815 and disable <max@contoso.com>." → `run_device_response`, `contain_user` (each preview, then execution)
 - "How did the week go in the SOC?" → `get_incident_statistics(days=7)`
 - "Which device had the IP 10.20.4.17 yesterday at 2:10 pm?" → `find_defender_devices(ip_address=…, seen_at=…)`
 - "Which remediation tasks are overdue?" → `get_remediation_tasks`
 - "Which automated investigations are pending approval?" → `get_response_actions(kind="investigations", state="PendingApproval")`
 - "Which custom hunts are there?" → `run_custom_hunt()`
-- "Is https://login-contoso.example/ malicious, and who clicked on it?" → `analyze_indicator`
-- "Is alice@contoso.com compromised?" → `investigate_user` (assessment with UEBA)
+- "Is <https://login-contoso.example/> malicious, and who clicked on it?" → `analyze_indicator`
+- "Is <alice@contoso.com> compromised?" → `investigate_user` (assessment with UEBA)
 - "Which users are currently risky, and which risk detections were there today?" → `get_identity_risks`, `get_identity_risks(view="detections", days=1)`
 - "Which privileged accounts have no MFA?" → `find_identities(privileged_only=True, without_mfa=True)`
-- "Disable the AD account of max@contoso.com." → `contain_user(action="disable_ad_account")` (preview, then execution)
+- "Disable the AD account of <max@contoso.com>." → `contain_user(action="disable_ad_account")` (preview, then execution)
 - "Which mails did ZAP remove today, and which campaigns are running?" → `hunt_email_threats(hunt="post_delivery")`, `hunt_email_threats(hunt="campaigns")`
 - "What did users report as phishing?" → `manage_submissions(operation="list", source="user")`
 - "What did automatic attack disruption block?" → `get_response_actions(kind="attack_disruption")`
@@ -203,6 +204,7 @@ The catalog is the file `src/defender_mcp/custom_hunts.json` (two examples are i
 ```
 
 Rules:
+
 - `name`: lowercase letters, digits and underscores, starts with a letter (3–41 characters). The agent reads
   `description` (10–600 characters) to choose the right hunt: describe what the hunt finds, preferably in English
   like the other tool descriptions. At most 50 hunts.
@@ -231,7 +233,7 @@ in the Defender portal it also reaches the tables of the SIEM workspace, without
 workspace, with `workspaceId` another one. No new app permissions are needed for this.
 
 | Sentinel MCP (collection) | Tool | Here |
-|---|---|---|
+| --- | --- | --- |
 | Data exploration | `list_sentinel_workspaces` | `list_sentinel_workspaces` |
 | | `search_tables` | `get_hunting_schema(search=...)`: table catalog and the tables that receive data in the workspace, then `get_hunting_schema(table=...)` |
 | | `query_lake` | `run_hunting_query(workspace=..., timespan_days=...)` for the analytics tier; not for data that is only in the data lake tier (see below) |
@@ -243,6 +245,7 @@ workspace, with `workspaceId` another one. No new app permissions are needed for
 | Security Copilot agent creation | – | not included (building Security Copilot agents, no public API) |
 
 **Differences to be aware of**
+
 - **Assessments without Security Copilot:** the entity analyzer of the Sentinel MCP lets AI decide and consumes
   Security Compute Units. Here, fixed queries collect the signals, and a disclosed rule yields level and verdict
   (`assessment.level`, `verdict`, `reasons`, `basis`). The agent phrases the verdict; the reasons can be verified.
@@ -294,6 +297,7 @@ overall `verified`, `accepted` (accepted, Graph does not show the new tag yet), 
 ## Permissions
 
 ### App registration (delegated, admin consent required)
+
 The OBO exchange uses `.default`; what counts is therefore the admin consent on the server app. **Do not add
 application permissions**: the server rejects app-only tokens.
 
@@ -325,10 +329,11 @@ missing in the tenant (error AADSTS650052), `deploy.ps1` creates it
 (`az ad sp create --id fc780465-2017-40d4-a0c5-307022471b92`).
 
 ### User roles
+
 The app permissions only open the door. What a user sees and may do is determined by their roles:
 
 | Task | Entra role (simple) | Defender Unified RBAC (fine-grained) |
-|---|---|---|
+| --- | --- | --- |
 | Read: incidents, alerts, hunting, devices | Security Reader | Security data basics (Read); for the email tables additionally Email & collaboration metadata (Read) |
 | Vulnerabilities, Secure Score | Security Reader | Vulnerability management (Read), Exposure Management (Read) |
 | Edit and comment on incidents/alerts; antivirus scan, investigation package | Security Operator | Alerts (Manage) |
@@ -435,7 +440,7 @@ On the first run, the script first checks:
 · Deployment settings
 · Required resource providers
 
-Afterwards, the Azure resources, the container image, and the two app registrations are created or configured. The client secret of the server app and the signing key are stored directly in the Key Vault and do not appear in the console output.
+Afterwards, the Azure resources, the container image, and the two app registrations are created or configured. Before applying the Container App Bicep deployment, the script runs an Azure Resource Manager what-if preview. The client secret of the server app and the signing key are stored directly in the Key Vault and do not appear in the console output.
 At the end, the script runs a smoke test and outputs the values we need for Copilot Studio in the next step. You can also run the script again. Existing resources are reused and missing components are added.
 
 Step 4: Connect the MCP server to Copilot Studio
@@ -446,11 +451,11 @@ As the server URL, enter the endpoint output by the deployment script:
 https://<container-app>.<domain>/mcp
 
 For authentication, we select OAuth 2.0 > Manual. You will find the actual values in the deployment script's output. Here is an example:
-Field	ValueClient ID	App ID of the Copilot client app
-Client Secret	Secret of the Copilot client app
-Authorization URL	https://login.microsoftonline.com/<tenant>/oauth2/v2.0/authorize
-Token URL / Refresh URL	https://login.microsoftonline.com/<tenant>/oauth2/v2.0/token
-Scopes	openid profile api://<server-client-id>/access_as_user offline_access
+Field ValueClient ID App ID of the Copilot client app
+Client Secret Secret of the Copilot client app
+Authorization URL <https://login.microsoftonline.com/><tenant>/oauth2/v2.0/authorize
+Token URL / Refresh URL <https://login.microsoftonline.com/><tenant>/oauth2/v2.0/token
+Scopes openid profile api://<server-client-id>/access_as_user offline_access
 
 You have to create the client secret manually once on the client app, and then store it in Copilot Studio in the connection setup.
 After saving, Copilot Studio displays a redirect URL. You can add it using the following command:
@@ -463,6 +468,7 @@ Afterwards, we create the connection and sign in.
 
 Optional:
 Restrict access via Entra groups
+
 ```PowerShell
 AllowedGroupIds = @('<object-id-of-the-security-group>')
 ```

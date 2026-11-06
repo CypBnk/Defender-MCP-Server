@@ -1195,8 +1195,12 @@ function Get-AppDiagnostics {
 # Retrying only helps when a fresh role assignment (Key Vault, ACR) is not effective yet.
 $RetryableDeployError = 'Key ?Vault|KeyVault|vault\.azure\.net|fetch secret|Unauthorized|unauthorized|ImagePullBackOff|AcrPull|PrincipalNotFound|Forbidden|AuthorizationFailed'
 
+$whatIfArgs = @('deployment', 'group', 'what-if', '--resource-group', $RG, '--name', $deployName,
+                '--template-file', (Join-Path $Root 'infra/main.bicep'), '--parameters') + $params
 $outputs = $null
 for ($attempt = 1; $attempt -le 3 -and -not $outputs; $attempt++) {
+    Write-Step "Previewing container app deployment (Bicep What-If)"
+    Invoke-AzCli -Arguments $whatIfArgs | Out-Host
     Invoke-AzCli -Arguments $deployArgs | Out-Null
     Start-Sleep -Seconds 10
     try {
